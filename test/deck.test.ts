@@ -18,6 +18,27 @@ function generateDeckOfCard(){
     }
 }
 
+function hasDuplicates(array : Array<any>) {
+    return (new Set(array)).size !== array.length;
+}
+
+function isArraySameSorter (array1: Array<Card>, array2: Array<Card>){
+    if(array1.length !== array2.length)
+        return false;
+    
+    let isSame = true;
+    for(let i = 0; i < array1.length; i++){
+        const card1 = array1[i];
+        const card2 = array2[i];
+        if(!card1.equalTo(card2)){
+            isSame = false;
+            break;
+        }
+    }
+
+    return isSame;
+}
+
 /**
  * @param number: number time to shuffle 
  */
@@ -37,25 +58,36 @@ function showMyPokerHand(){
 }
 
 export function testDeckOfCard(){
-    mocha.it("generate deck of card", function () {
-        generateDeckOfCard();
-        let deckLength = pokerDeck.length;
-
-        chai.expect(deckLength).is.a("number");
-        chai.expect(deckLength).to.equal(52);
-    })
+    mocha.describe("testing deck of card", () => {
+        mocha.before("generate deck of card", function () {
+            generateDeckOfCard();
+            let deckLength = pokerDeck.length;
+            let checkDuplicate = hasDuplicates(pokerDeck.list);
     
-    shuffleDeck(5);
+            chai.expect(deckLength).is.a("number");
+            chai.expect(checkDuplicate).is.equal(false);
+            chai.expect(deckLength).to.equal(52);
+        })
 
-    mocha.it("check draw a random card", function(){
-        showMyPokerHand();
-        console.log(myHand.list);
+        mocha.it("shuffle the deck", function(){
+            const _listBefore = [...pokerDeck.list];
+            shuffleDeck(5);
+            let isSamePos = isArraySameSorter(_listBefore, pokerDeck.list);
+            let deckLength = pokerDeck.length;
+    
+            chai.expect(deckLength).to.equal(52);
+            chai.expect(isSamePos).to.equal(false);
+        })
 
-        let deckLength = pokerDeck.length;
-        let handLength = myHand.length;
+        mocha.after("check random card by draw 5 card", function(){
+            showMyPokerHand();
+            console.log(myHand.list);
 
-        chai.expect(deckLength).to.equal(52 - 5);
-        chai.expect(handLength).to.equal(5);
+            let deckLength = pokerDeck.length;
+            let handLength = myHand.length;
+
+            chai.expect(deckLength).to.equal(52 - 5);
+            chai.expect(handLength).to.equal(5);
+        })
     })
-
 }
