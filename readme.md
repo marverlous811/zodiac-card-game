@@ -1,21 +1,11 @@
 ## Description
 
-### A seed project using typescript, can apply for both client and server
+##Usage
 
-- Client: using webpack
-
-- Server: using nodejs
-
-### Usage
-
-- install
-
-    `npm install` 
-
-- For server
-
+- start
+    
     `npm run start-server`
 
-- For client
+- test
 
-    `npm run start-client`
+    `npm run start-test`
