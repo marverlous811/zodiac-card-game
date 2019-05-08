@@ -1,51 +1,63 @@
 const zodiacCard = [
     {
         name: "aries",
-        values: [5,6,7,8,9]
+        values: [5,6,7,8,9],
+        minValue: 5,
     },
     {
         name: "taurus",
-        values: [2,4,6,8]
+        values: [2,4,6,8],
+        minValue: 2,
     },
     {
         name: "gemini",
-        values: [1,1,4,4,7,7]
+        values: [1,1,4,4,7,7],
+        minValue: 1,
     },
     {
         name: "cancer",
-        values: [0,0,5,5,10,10]
+        values: [0,0,5,5,10,10],
+        minValue: 0,
     },
     {
         name: "leo",
-        values: [1,3,5,7,9]
+        values: [1,3,5,7,9],
+        minValue: 1,
     },
     {
         name: "virgo",
-        values: [1,2,3,4,5]
+        values: [1,2,3,4,5],
+        minValue: 1,
     },
     {
         name: "libra",
-        values: [1,2,3,4,6,7,8,9]
+        values: [1,2,3,4,6,7,8,9],
+        minValue: 1,
     },
     {
         name: "scorpio",
-        values: [-1,-1,1,1]
+        values: [-1,-1,1,1],
+        minValue: -1,
     },
     {
         name: "sagittarius",
-        values: [4,6,8,10]
+        values: [4,6,8,10],
+        minValue: 4,
     },
     {
         name: "capricorn",
-        values: [5,7,9,11]
+        values: [5,7,9,11],
+        minValue: 5,
     },
     {
         name: "aquarius",
-        values: [3,3,6,6,9,9]
+        values: [3,3,6,6,9,9],
+        minValue: 3,
     },
     {
         name: "pisces",
-        values: [4,4,6,6,8,8]
+        values: [4,4,6,6,8,8],
+        minValue: 4,
     },
 ]
 

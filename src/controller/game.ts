@@ -1,8 +1,9 @@
-import { Card, CardFactory, CardType } from "./card";
+import { Card, CardFactory, CardType, PiecesCard } from "./card";
 import CardData from '../store/listCard';
 
 export class Game{
-    listAllCard : Array<Card> = [];
+    deck : PiecesCard = new PiecesCard();
+    dust : PiecesCard = new PiecesCard();
     cardFactory : CardFactory = CardFactory.getInstance();
     constructor(){
         this.init();
@@ -26,7 +27,12 @@ export class Game{
                     value);
                 if(!card) continue;
 
-                this.listAllCard.push(card);
+                if(value === cardInfo.minValue){
+                    this.dust.addCard(card);
+                }
+                else{
+                    this.deck.addCard(card);
+                }
             }
         }
 
@@ -40,7 +46,7 @@ export class Game{
 
             if(!card) continue;
 
-            this.listAllCard.push(card);
+            this.deck.addCard(card);
         }
     }
 }
