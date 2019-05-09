@@ -19,6 +19,20 @@ export function simpleGame(){
 
             const listPlayer : Array<Player> = [player_1, player_2, player_3, player_4];
 
+            game.on("start_game", function(){
+                // console.log("start game...");
+            })
+
+            game.on("end_draw_phase", function(){
+                // console.log("draw phase end");
+            })
+            game.on("next_turn", function(){
+                // console.log("change turn ", game.nowPlayer.name);
+            })
+            game.on("end_game", function(){
+                // console.log("end game...");
+            })
+
             game.init(listPlayer);
             game.startGame();
 

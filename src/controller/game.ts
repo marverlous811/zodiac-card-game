@@ -5,8 +5,9 @@ import { StateMachine, GAME_STATE, GameAction } from "./gameAction";
 import { Field } from "./field";
 import { shuffleArray } from "../util";
 import { GameListener } from "./gameListener";
+import events = require('events');
 
-export class Game{
+export class Game extends events.EventEmitter{
     deck : PiecesCard = new PiecesCard();
     dust : PiecesCard = new PiecesCard();
     cardFactory : CardFactory = CardFactory.getInstance();
@@ -108,6 +109,7 @@ export class Game{
         this.shuffleCard(this.dust);
         this.nowPlayer.setActive(true);
         this.gameListener.changeState(GAME_STATE.STAND_BY);
+        this.emit("start_game");
     }
 
     getFromDeckToField = () => {
@@ -120,6 +122,7 @@ export class Game{
         const state = this.field.push(card);
         if(state)
             this.gameListener.changeState(state);
+        this.emit("end_draw_phase");
     }
 
     endTurn = (dropFlag: boolean) => {
@@ -132,8 +135,10 @@ export class Game{
             this.nowPlayer.addCards(listCardFromField);
         }
         
-        if(this.gameListener.state !== GAME_STATE.SYS_ENDGAME)
+        if(this.gameListener.state !== GAME_STATE.SYS_ENDGAME){
             this.nextTurn();
+            this.emit("next_turn");
+        }
     }
 
     sendCardToDust = (listCard: Array<Card>) => {
@@ -159,6 +164,7 @@ export class Game{
     endGame = () => {
         this.endTurn(false);
         this.winner =  this.whoIsWinner();
+        this.emit("end_game");
     }
 
     whoIsWinner = () => {
