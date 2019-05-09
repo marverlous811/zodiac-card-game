@@ -3,17 +3,17 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as mocha from 'mocha';
 
-const value = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12];
+const value = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 const kind = ["shape", "heart", "club", "diamond"];
 
-const pokerDeck = new PiecesCard();
+let pokerDeck = new PiecesCard();
 const myHand = new PiecesCard();
 
-function generateDeckOfCard(){
+function generateDeckOfCard(deck: PiecesCard){
     for(let i = 0; i < kind.length; i++){
         for(let j = 0; j < value.length; j++){
             const card = new Card(kind[i], value[j]);
-            pokerDeck.addCard(card);
+            deck.addCard(card);
         }
     }
 }
@@ -58,9 +58,9 @@ function showMyPokerHand(){
 }
 
 export function testDeckOfCard(){
-    mocha.describe("testing deck of card", () => {
+    mocha.describe("test deck of card", () => {
         mocha.before("generate deck of card", function () {
-            generateDeckOfCard();
+            generateDeckOfCard(pokerDeck);
             let deckLength = pokerDeck.length;
             let checkDuplicate = hasDuplicates(pokerDeck.list);
     
@@ -84,7 +84,7 @@ export function testDeckOfCard(){
 
         mocha.after("check random card by draw 5 card", function(){
             showMyPokerHand();
-            console.log(myHand.list);
+            // console.log(myHand.list);
 
             let deckLength = pokerDeck.length;
             let handLength = myHand.length;
@@ -93,6 +93,34 @@ export function testDeckOfCard(){
             chai.expect(deckLength).to.equal(52 - 5);
             chai.expect(handLength).to.equal(5);
             chai.expect(checkDuplicate).is.equal(false);
+        })
+    })
+
+    mocha.describe("test search card", () => {
+        mocha.it("search a card", function() {
+            const deck = new PiecesCard();
+            generateDeckOfCard(deck);
+            
+            const card = new Card("heart", 1);
+            const index = deck.findCard(card);
+            const _card = deck.list[index];
+
+            chai.expect(index).is.a("number");
+            chai.expect(index).to.equal(13);
+            chai.expect(_card.name).to.equal("heart");
+            chai.expect(_card.value).to.equal(1);
+        })
+
+        mocha.it("search a list card with the same name", function(){
+            const deck = new PiecesCard();
+            generateDeckOfCard(deck);
+
+            const list = deck.findCardsWithName("heart");
+            const random = Math.floor(Math.random() * (+12 - +0)) + +0; 
+
+            chai.expect(list).is.a("array");
+            chai.expect(list.length).to.equal(13);
+            chai.expect(list[random].name).to.equal("heart");
         })
     })
 }

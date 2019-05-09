@@ -9,23 +9,31 @@ export enum CARD_TYPE {
 
 export class Card{
     protected type : CARD_TYPE | undefined;
-    protected name : string = '';
-    protected value: number = 0;
+    protected _name : string = '';
+    protected _value: number = 0;
 
     constructor(name : string, value: number){
-        this.name = name;
-        this.value = value;
+        this._name = name;
+        this._value = value;
     }
 
     equalTo(card: Card){
-        return this.name  === card.name 
+        return this._name  === card._name 
             && this.type  === card.type
-            && this.value === card.value
+            && this._value === card._value
     }
 
     isTheSameName(card: Card){
         return this.type === card.type
-            && this.name === card.name
+            && this._name === card._name
+    }
+
+    get name(){
+        return this._name;
+    }
+
+    get value(){
+        return this._value;
     }
 }
 
@@ -70,6 +78,32 @@ export class PiecesCard{
 
     get list(){
         return this.listCard;
+    }
+
+    findCard(card: Card){
+        let index = -1;
+        for(let i = 0; i < this.listCard.length; i++){
+            const _card = this.listCard[i];
+            if(_card.equalTo(card)){
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
+    findCardsWithName(name: string){
+        let list : Array<Card> = [];
+
+        for(let i = 0; i < this.listCard.length; i++){
+            const _card = this.listCard[i];
+            if(_card.name === name){
+                list.push(_card);
+            }
+        }        
+
+        return list;
     }
 }
 
