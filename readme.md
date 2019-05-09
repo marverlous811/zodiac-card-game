@@ -21,3 +21,7 @@
 - test
 
     `npm run start-test`
+
+- intergartion test
+
+    `tsc && node dist/test/realGame.test.js`
