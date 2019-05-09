@@ -14,3 +14,7 @@ export function shuffleArray(arr : Array<any>){
 
     return arr;
 }
+
+export function randomNumber (min: number, max: number){
+    return Math.floor(Math.random() * (+max - +min)) + +min;
+}

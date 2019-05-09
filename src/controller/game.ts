@@ -15,6 +15,7 @@ export class Game{
     field: Field = new Field();
     gameListener: GameListener = new GameListener(this.gameStateMachine);
     nowTurnPlayer: number = 0;
+    winner: Player | undefined;
     
     get nowPlayer(){
         return this.listPlayer[this.nowTurnPlayer];
@@ -98,6 +99,7 @@ export class Game{
         this.gameStateMachine.setActionForState(GAME_STATE.PLAYER_DRAWING, new GameAction(this.getFromDeckToField));
         this.gameStateMachine.setActionForState(GAME_STATE.PLAYER_ENDTURN, new GameAction(playerEnd));
         this.gameStateMachine.setActionForState(GAME_STATE.SYS_ENDTURN, new GameAction(systemEnd));
+        this.gameStateMachine.setActionForState(GAME_STATE.SYS_ENDGAME, new GameAction(this.endGame));
     }
 
     startGame = () => {
@@ -110,6 +112,9 @@ export class Game{
 
     getFromDeckToField = () => {
         const card = this.deck.popCard();
+        if(this.deck.length === 0){
+            this.gameListener.changeState(GAME_STATE.SYS_ENDGAME);
+        }
         if(!card) return;
 
         const state = this.field.push(card);
@@ -148,5 +153,26 @@ export class Game{
         this.nowTurnPlayer++;
         this.nowPlayer.setActive(true);
         this.gameListener.changeState(GAME_STATE.STAND_BY);
+    }
+
+    endGame = () => {
+        this.endTurn(false);
+        this.winner =  this.whoIsWinner();
+    }
+
+    whoIsWinner = () => {
+        const listPlayer = this.listPlayer;
+        let maxScore = -1;
+        let winner : Player | undefined;
+
+        for(let i = 0; i < listPlayer.length; i++){
+            const player = listPlayer[i];
+            if(player.score > maxScore){
+                maxScore = player.score;
+                winner = player;
+            }
+        }
+
+        return winner;
     }
 }
