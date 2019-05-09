@@ -74,9 +74,12 @@ export function testDeckOfCard(){
             shuffleDeck(5);
             let isSamePos = isArraySameSorter(_listBefore, pokerDeck.list);
             let deckLength = pokerDeck.length;
+
+            let checkDuplicate = hasDuplicates(pokerDeck.list);
     
             chai.expect(deckLength).to.equal(52);
             chai.expect(isSamePos).to.equal(false);
+            chai.expect(checkDuplicate).is.equal(false);
         })
 
         mocha.after("check random card by draw 5 card", function(){
@@ -85,9 +88,11 @@ export function testDeckOfCard(){
 
             let deckLength = pokerDeck.length;
             let handLength = myHand.length;
+            let checkDuplicate = hasDuplicates(myHand.list);
 
             chai.expect(deckLength).to.equal(52 - 5);
             chai.expect(handLength).to.equal(5);
+            chai.expect(checkDuplicate).is.equal(false);
         })
     })
 }
