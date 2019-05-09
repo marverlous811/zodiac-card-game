@@ -1,3 +1,5 @@
+import { shuffleArray } from "../util";
+
 export enum CardType {
     ZODIAC,
     PLANET,
@@ -19,6 +21,11 @@ export class Card{
         return this.name  === card.name 
             && this.type  === card.type
             && this.value === card.value
+    }
+
+    isTheSameName(card: Card){
+        return this.type === card.type
+            && this.name === card.name
     }
 }
 
@@ -42,17 +49,7 @@ export class PiecesCard{
     protected listCard : Array<Card> = [];
 
     shuffle(){
-        let counter = this.length;
-        while(counter > 0){
-            //pick a random index
-            let index = Math.floor(Math.random() * counter);
-
-            counter--;
-
-            let temp = this.listCard[counter];
-            this.listCard[counter] = this.listCard[index];
-            this.listCard[index] = temp;
-        }
+        this.listCard = shuffleArray(this.listCard);
     }
 
     addCard(card : Card){
