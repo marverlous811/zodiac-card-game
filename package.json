@@ -5,14 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --config webpack.config.js --open",
-    "test" : "mocha dist/test/app.test.js",
+    "test": "mocha dist/test/app.test.js",
     "server": "node dist/app.js",
     "server-build": "tsc -w",
     "build": "webpack --config webpack-prod.config.js",
     "clean": "rm -rf ./dist/*",
     "start-server": "npm run clean && tsc && node dist/app.js",
     "start-client": "npm run clean && npm run start",
-    "start-test"  : "npm run clean && tsc && npm run test"
+    "start-test": "npm run clean && tsc && npm run test"
   },
   "author": "marverlous",
   "license": "ISC",
