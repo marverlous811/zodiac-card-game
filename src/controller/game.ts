@@ -131,8 +131,9 @@ export class Game{
         else{
             this.nowPlayer.addCards(listCardFromField);
         }
-
-        this.nextTurn();
+        
+        if(this.gameListener.state !== GAME_STATE.SYS_ENDGAME)
+            this.nextTurn();
     }
 
     sendCardToDust = (listCard: Array<Card>) => {

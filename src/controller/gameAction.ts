@@ -1,13 +1,13 @@
 export enum GAME_STATE{
-    PLAYER_DRAWING, // Player trigger draw
-    PLAYER_ENDTURN, // Player trigger end turn
-    PLAYER_TRIGGER, // Player use card effect
-    SYS_ENDTURN,    // Turn is ended by system call
-    SYS_TRIGGER,    // Card effect is triggered by system call
-    STAND_BY,       // Wait for player action 
-    SYS_ENDGAME,    // End Game
-    SYS_STARTGAME,  // Start 
-    SYS_WAIT,       // wait for game
+    PLAYER_DRAWING = 0, // 0: Player trigger draw
+    PLAYER_ENDTURN,     // 1: Player trigger end turn
+    PLAYER_TRIGGER,     // 2: Player use card effect
+    SYS_ENDTURN,        // 3: Turn is ended by system call
+    SYS_TRIGGER,        // 4: Card effect is triggered by system call
+    STAND_BY,           // 5: Wait for player action 
+    SYS_ENDGAME,        // 6: End Game
+    SYS_STARTGAME,      // 7: Start 
+    SYS_WAIT,           // 8: wait for game
 }
 
 export class GameAction {
