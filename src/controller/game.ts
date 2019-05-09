@@ -1,16 +1,25 @@
-import { Card, CardFactory, CardType, PiecesCard } from "./card";
+import { Card, CardFactory, CARD_TYPE, PiecesCard } from "./card";
 import CardData from '../store/listCard';
+import Player from "./player";
+import { StateMachine } from "./gameAction";
 
 export class Game{
     deck : PiecesCard = new PiecesCard();
     dust : PiecesCard = new PiecesCard();
     cardFactory : CardFactory = CardFactory.getInstance();
+    gameStateMachine: StateMachine = StateMachine.getInstance();
+    listPlayer : Array<Player> = [];
+    
     constructor(){
         this.init();
     }
 
     init(){
         this.generateCard();
+    }
+
+    createPlayer(){
+        
     }
 
     generateCard(){
@@ -22,7 +31,7 @@ export class Game{
             for(let j = 0; j < cardInfo.values.length; j++){
                 const value = cardInfo.values[j];
                 const card =  this.cardFactory.makeCard(
-                    CardType.ZODIAC, 
+                    CARD_TYPE.ZODIAC, 
                     cardInfo.name, 
                     value);
                 if(!card) continue;
@@ -39,7 +48,7 @@ export class Game{
         for(let i = 0; i < planetCard.length; i++){
             const cardInfo : any = planetCard[i];
             const card = this.cardFactory.makeCard(
-                CardType.PLANET, 
+                CARD_TYPE.PLANET, 
                 cardInfo.name, 
                 cardInfo.values, 
                 cardInfo.listZodiac);
