@@ -1,4 +1,6 @@
 import { PiecesCard, Card } from "./card";
+import { GameListener } from "./gameListener";
+import { GAME_STATE } from "./gameAction";
 
 class HandCard extends PiecesCard{
     getMaxValueCard(name: string){
@@ -22,12 +24,15 @@ export default class Player{
     private cardMap : Map<string, number> =  new Map();
     
     private isActive : boolean = false;
-    private listener: any;
+    private listener: GameListener | undefined;
     private _score: number;
-    constructor(name: string, listener?: any){
+    constructor(name: string){
         this._name = name;
-        this.listener = listener;
         this._score = 0;
+    }
+
+    setListener(lisenter : GameListener){
+        this.listener = lisenter
     }
 
     get name(){
@@ -40,6 +45,10 @@ export default class Player{
 
     get handLength(){
         return this.hand.length;
+    }
+
+    get actived(){
+        return this.isActive;
     }
 
     addCard(card: Card){
@@ -69,5 +78,21 @@ export default class Player{
 
     setActive(active: boolean){
         this.isActive = active;
+    }
+
+    draw(){
+        if(!this.isActive) return;
+
+        if(!this.listener) return;
+
+        this.listener.changeState(GAME_STATE.PLAYER_DRAWING);
+    }
+
+    endTurn(){
+        if(!this.isActive) return;
+
+        if(!this.listener) return;
+
+        this.listener.changeState(GAME_STATE.PLAYER_ENDTURN);
     }
 }

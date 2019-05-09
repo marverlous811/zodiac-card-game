@@ -9,7 +9,7 @@ const data = dataTest;
 export function playerTest(){
     mocha.describe("add card to hand", function() {        
         mocha.it("add 1 card ", function(){
-            const player = new Player("marverlous", null);
+            const player = new Player("marverlous");
             const card = new Card(data[10].name, data[10].value);
             player.addCard(card);
 
@@ -17,7 +17,7 @@ export function playerTest(){
         });
 
         mocha.it("add 2 card with the same name", function(){
-            const player = new Player("marverlous", null);
+            const player = new Player("marverlous");
 
             const card1 = new Card(data[1].name, data[1].value);
             const card2 = new Card(data[10].name, data[10].value);
@@ -40,7 +40,7 @@ export function playerTest(){
         })
 
         mocha.it("add list card ", function(){
-            const player = new Player("marverlous", null);
+            const player = new Player("marverlous");
             player.addCards(listCard);
 
             chai.expect(player.handLength).to.equal(11);

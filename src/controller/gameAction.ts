@@ -5,16 +5,19 @@ export enum GAME_STATE{
     SYS_ENDTURN,    // Turn is ended by system call
     SYS_TRIGGER,    // Card effect is triggered by system call
     STAND_BY,       // Wait for player action 
+    SYS_ENDGAME,    // End Game
+    SYS_STARTGAME,  // Start 
+    SYS_WAIT,       // wait for game
 }
 
 export class GameAction {
-    action : () => void;
-    constructor(action: () => void){
+    action : (...params: any) => void;
+    constructor(action: (...params: any) => void){
         this.action = action;
     }
 
-    trigger(){
-        this.action();
+    trigger(...params: any){
+        this.action(params);
     }
 }
 
@@ -38,10 +41,10 @@ export class StateMachine{
         this.stateMap.set(state, gameAction);
     }
 
-    action(state: GAME_STATE){
+    action(state: GAME_STATE, ...params : any){
         const action = this.stateMap.get(state);
         if(!action) return;
 
-        action.trigger();
+        action.trigger(params);
     }
 }
