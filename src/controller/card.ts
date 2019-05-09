@@ -1,6 +1,6 @@
 import { shuffleArray } from "../util";
 
-export enum CardType {
+export enum CARD_TYPE {
     ZODIAC,
     PLANET,
     CHAR,
@@ -8,7 +8,7 @@ export enum CardType {
 }
 
 export class Card{
-    protected type : CardType | undefined;
+    protected type : CARD_TYPE | undefined;
     protected name : string = '';
     protected value: number = 0;
 
@@ -32,7 +32,7 @@ export class Card{
 export class ZodiacCard extends Card{
     constructor(name: string, value: number){
         super(name, value);
-        this.type = CardType.ZODIAC;
+        this.type = CARD_TYPE.ZODIAC;
     }
 }
 
@@ -40,7 +40,7 @@ export class PlanetCard extends Card{
     private protectionZodiac : Array<string> = [];
     constructor(name: string, value: number, listZodiac: Array<string>){
         super(name, value);
-        this.type = CardType.PLANET;
+        this.type = CARD_TYPE.PLANET;
         this.protectionZodiac = listZodiac;
     }
 }
@@ -94,11 +94,11 @@ class PlanetCardFactory implements ICardFactory{
 }
 
 export class CardFactory{
-    cardFactories : Map<CardType, ICardFactory> = new Map();
+    cardFactories : Map<CARD_TYPE, ICardFactory> = new Map();
     static instance : CardFactory;
     private constructor(){
-        this.cardFactories.set(CardType.ZODIAC, new ZodiacCardFactory());
-        this.cardFactories.set(CardType.PLANET, new PlanetCardFactory());
+        this.cardFactories.set(CARD_TYPE.ZODIAC, new ZodiacCardFactory());
+        this.cardFactories.set(CARD_TYPE.PLANET, new PlanetCardFactory());
     }
 
     static getInstance(){
@@ -109,7 +109,7 @@ export class CardFactory{
         return this.instance;
     }
 
-    makeCard(type: CardType, name: string, value: number, ...option: any){
+    makeCard(type: CARD_TYPE, name: string, value: number, ...option: any){
         const factory = this.cardFactories.get(type);
         if(!factory) return;
 
