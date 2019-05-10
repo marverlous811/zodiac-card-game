@@ -2,23 +2,43 @@ import { Card, CardFactory, CARD_TYPE, PiecesCard } from "./card";
 import CardData from '../store/listCard';
 import Player from "./player";
 import { StateMachine, GAME_STATE, GameAction } from "./gameAction";
-import { Field } from "./field";
+import { Field, FIELD_STATE } from "./field";
 import { shuffleArray } from "../util";
 import { GameListener } from "./gameListener";
 import events = require('events');
+import { EffectMethod } from "./cardEffect";
 
-export class Game extends events.EventEmitter{
-    private deck : PiecesCard = new PiecesCard();
-    private dust : PiecesCard = new PiecesCard();
+export interface ICardAction{
+    cardTmp: Array<Card>;
+    deck: PiecesCard;
+    dust: PiecesCard;
+    field: Field;
+    changeFieldState: (state: FIELD_STATE) => void;
+    seeTopCards: () => void;
+    addCardToTmp: (piecesCard: PiecesCard) => void;
+    giveACard: (player: Player) => void;
+    dropCardFromTmp: (piecesCard: PiecesCard) => void;
+    changeGameState: (state: GAME_STATE) => void;
+    sendCardToDust: (listCard: Array<Card>) => void;
+    addCardForNowPlayer: (listCard: Array<Card>) => void;
+}
+
+export class Game extends events.EventEmitter implements ICardAction{
     private cardFactory : CardFactory = CardFactory.getInstance();
     private gameStateMachine: StateMachine = StateMachine.getInstance();
     private gameListener: GameListener = new GameListener(this.gameStateMachine);
     private numberShuffle: number = 10;
+    private triggerTimeout: number = 10;
+    private timeoutId : number = -1;
 
+    cardTmp : Array<Card> = [];
+    deck : PiecesCard = new PiecesCard();
+    dust : PiecesCard = new PiecesCard();
     listPlayer : Array<Player> = [];
     field: Field = new Field();
     nowTurnPlayer: number = 0;
     winner: Player | undefined;
+    effectMethod: EffectMethod = EffectMethod.getInstance(); 
     
     get nowPlayer(){
         return this.listPlayer[this.nowTurnPlayer];
@@ -48,7 +68,8 @@ export class Game extends events.EventEmitter{
         this.generateCard();
         this.createPlayer(players);
         this.setAction();
-        this.gameListener.changeState(GAME_STATE.SYS_STARTGAME);
+        this.effectMethod.init(this);
+        this.changeGameState(GAME_STATE.SYS_STARTGAME);
     }
 
     createPlayer(players: Array<Player>){
@@ -109,6 +130,8 @@ export class Game extends events.EventEmitter{
         this.gameStateMachine.setActionForState(GAME_STATE.PLAYER_ENDTURN, new GameAction(playerEnd));
         this.gameStateMachine.setActionForState(GAME_STATE.SYS_ENDTURN, new GameAction(systemEnd));
         this.gameStateMachine.setActionForState(GAME_STATE.SYS_ENDGAME, new GameAction(this.endGame));
+        this.gameStateMachine.setActionForState(GAME_STATE.SYS_TRIGGER, new GameAction(this.triggerCard));
+        this.gameStateMachine.setActionForState(GAME_STATE.SYS_ACTIVE, new GameAction(this.activeEffect));
     }
 
     startGame = () => {
@@ -118,20 +141,27 @@ export class Game extends events.EventEmitter{
             this.shuffleCard(this.dust);
         }
         this.nowPlayer.setActive(true);
-        this.gameListener.changeState(GAME_STATE.STAND_BY);
+        this.changeGameState(GAME_STATE.STAND_BY);
         this.emit("start_game");
     }
 
     getFromDeckToField = () => {
         const card = this.deck.popCard();
         if(this.deck.length === 0){
-            this.gameListener.changeState(GAME_STATE.SYS_ENDGAME);
+            this.changeGameState(GAME_STATE.SYS_ENDGAME);
         }
         if(!card) return;
 
         const state = this.field.push(card);
-        if(state)
-            this.gameListener.changeState(state);
+        if(state){
+            if(state === GAME_STATE.SYS_TRIGGER){
+                this.changeGameState(state, card);
+            }
+            else{
+                this.changeGameState(state);
+            }
+        }
+            
         this.emit("end_draw_phase");
     }
 
@@ -151,11 +181,20 @@ export class Game extends events.EventEmitter{
         }
     }
 
-    sendCardToDust = (listCard: Array<Card>) => {
-        for(let i = 0; i < listCard.length; i++){
-            const card = listCard[i];
-            this.dust.addCard(card);
+    triggerCard = (card: Card) => {
+        // console.log(card);
+        this.effectMethod.push(card);
+        this.changeGameState(GAME_STATE.SYS_WAIT_CHAIN);
+        this.emit("trigger_card", card);
+        if(this.timeoutId > 0){
+            clearTimeout(this.timeoutId);
         }
+
+        this.timeoutId = setTimeout(() => {
+            // console.log("no player wait to change...");
+            this.changeGameState(GAME_STATE.SYS_ACTIVE);
+            this.emit("active_phase")
+        }, this.triggerTimeout * 1000);
     }
 
     nextTurn = () => {
@@ -163,13 +202,13 @@ export class Game extends events.EventEmitter{
         if(this.nowTurnPlayer + 1 >= this.numberPlayer){
             this.nowTurnPlayer = 0;
             this.nowPlayer.setActive(true);
-            this.gameListener.changeState(GAME_STATE.STAND_BY);
+            this.changeGameState(GAME_STATE.STAND_BY);
             return;
         }
 
         this.nowTurnPlayer++;
         this.nowPlayer.setActive(true);
-        this.gameListener.changeState(GAME_STATE.STAND_BY);
+        this.changeGameState(GAME_STATE.STAND_BY);
     }
 
     endGame = () => {
@@ -192,5 +231,50 @@ export class Game extends events.EventEmitter{
         }
 
         return winner;
+    }
+
+    activeEffect = () => {
+        const state = this.effectMethod.activeEffect();
+        this.changeGameState(state);
+        this.emit("active_done", state);
+    }
+
+
+    /**
+     * Implement Card Action Interface
+     */
+    changeFieldState = (state: FIELD_STATE) => {
+        this.field.setState(state);
+    }
+
+    seeTopCards = () => {
+
+    }
+
+    addCardToTmp = () => {
+
+    }
+
+    giveACard = (player: Player) => {
+
+    }
+
+    addCardForNowPlayer = (listCard: Array<Card>) => {
+        this.nowPlayer.addCards(listCard);
+    }
+
+    dropCardFromTmp = () => {
+        
+    }
+
+    changeGameState = (state: GAME_STATE, params?: any) =>{
+        this.gameListener.changeState(state, params);
+    }
+
+    sendCardToDust = (listCard: Array<Card>) => {
+        for(let i = 0; i < listCard.length; i++){
+            const card = listCard[i];
+            this.dust.addCard(card);
+        }
     }
 }

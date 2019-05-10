@@ -118,6 +118,22 @@ export class PiecesCard{
 
         return true;
     }
+
+    getCardToPos(card: Card, pos: number){
+        let index = this.findCard(card);
+        if(index === -1){
+            return false;
+        }
+        if(pos >= this.length){
+            return false;
+        }
+
+        let temp : Card = this.listCard[index];
+        this.listCard[index] = this.listCard[pos];
+        this.listCard[pos] = temp;
+
+        return true;
+    }
 }
 
 interface ICardFactory{

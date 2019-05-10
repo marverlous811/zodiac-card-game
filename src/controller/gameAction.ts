@@ -8,6 +8,8 @@ export enum GAME_STATE{
     SYS_ENDGAME,        // 6: End Game
     SYS_STARTGAME,      // 7: Start 
     SYS_WAIT,           // 8: wait for game
+    SYS_WAIT_CHAIN,     // 9: wait for chain link
+    SYS_ACTIVE,         // 10: start to active effect
 }
 
 export class GameAction {
@@ -16,7 +18,7 @@ export class GameAction {
         this.action = action;
     }
 
-    trigger(...params: any){
+    trigger(params?: any){
         this.action(params);
     }
 }
@@ -41,7 +43,7 @@ export class StateMachine{
         this.stateMap.set(state, gameAction);
     }
 
-    action(state: GAME_STATE, ...params : any){
+    action(state: GAME_STATE, params? : any){
         const action = this.stateMap.get(state);
         if(!action) return;
 

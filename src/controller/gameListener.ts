@@ -11,8 +11,8 @@ export class GameListener{
         return this._state;
     }
 
-    changeState(state: GAME_STATE){
+    changeState(state: GAME_STATE, params?: any){
         this._state = state;
-        this.gameStateMachine.action(this._state);
+        this.gameStateMachine.action(this._state, params);
     }
 }
