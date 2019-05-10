@@ -28,7 +28,7 @@ export default function gameTest(){
             game.startGame();
 
             chai.expect(game.nowPlayer.actived).to.equal(true);
-            chai.expect(game.gameListener.state).to.equal(GAME_STATE.STAND_BY);
+            chai.expect(game.state).to.equal(GAME_STATE.STAND_BY);
         })
 
         mocha.it("next turn ", function(){
@@ -38,7 +38,7 @@ export default function gameTest(){
 
             chai.expect(game.nowTurnPlayer).to.equal(3);
             chai.expect(game.nowPlayer.actived).to.equal(true);
-            chai.expect(game.gameListener.state).to.equal(GAME_STATE.STAND_BY);
+            chai.expect(game.state).to.equal(GAME_STATE.STAND_BY);
 
             for(let i = 0; i < game.numberPlayer; i++){
                 if(i != game.nowTurnPlayer){

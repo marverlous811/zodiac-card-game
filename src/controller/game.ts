@@ -8,13 +8,15 @@ import { GameListener } from "./gameListener";
 import events = require('events');
 
 export class Game extends events.EventEmitter{
-    deck : PiecesCard = new PiecesCard();
-    dust : PiecesCard = new PiecesCard();
-    cardFactory : CardFactory = CardFactory.getInstance();
-    gameStateMachine: StateMachine = StateMachine.getInstance();
+    private deck : PiecesCard = new PiecesCard();
+    private dust : PiecesCard = new PiecesCard();
+    private cardFactory : CardFactory = CardFactory.getInstance();
+    private gameStateMachine: StateMachine = StateMachine.getInstance();
+    private gameListener: GameListener = new GameListener(this.gameStateMachine);
+    private numberShuffle: number = 10;
+
     listPlayer : Array<Player> = [];
     field: Field = new Field();
-    gameListener: GameListener = new GameListener(this.gameStateMachine);
     nowTurnPlayer: number = 0;
     winner: Player | undefined;
     
@@ -36,6 +38,10 @@ export class Game extends events.EventEmitter{
 
     get dustLength(){
         return this.dust.length;
+    }
+
+    get state(){
+        return this.gameListener.state
     }
 
     init(players: Array<Player>){
@@ -95,7 +101,9 @@ export class Game extends events.EventEmitter{
 
     setAction(){
         const playerEnd = () => { this.endTurn(false) };
-        const systemEnd = () => { this.endTurn(true) };
+        const systemEnd = () => { 
+            this.endTurn(true) 
+        };
 
         this.gameStateMachine.setActionForState(GAME_STATE.PLAYER_DRAWING, new GameAction(this.getFromDeckToField));
         this.gameStateMachine.setActionForState(GAME_STATE.PLAYER_ENDTURN, new GameAction(playerEnd));
@@ -104,9 +112,11 @@ export class Game extends events.EventEmitter{
     }
 
     startGame = () => {
-        this.listPlayer = shuffleArray(this.listPlayer);
-        this.shuffleCard(this.deck);
-        this.shuffleCard(this.dust);
+        for(let i = 0; i < this.numberShuffle; i++){
+            this.listPlayer = shuffleArray(this.listPlayer);
+            this.shuffleCard(this.deck);
+            this.shuffleCard(this.dust);
+        }
         this.nowPlayer.setActive(true);
         this.gameListener.changeState(GAME_STATE.STAND_BY);
         this.emit("start_game");
@@ -153,6 +163,7 @@ export class Game extends events.EventEmitter{
         if(this.nowTurnPlayer + 1 >= this.numberPlayer){
             this.nowTurnPlayer = 0;
             this.nowPlayer.setActive(true);
+            this.gameListener.changeState(GAME_STATE.STAND_BY);
             return;
         }
 

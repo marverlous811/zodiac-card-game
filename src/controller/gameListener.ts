@@ -1,8 +1,8 @@
 import { StateMachine, GAME_STATE } from "./gameAction";
 
 export class GameListener{
-    gameStateMachine : StateMachine;
-    _state: GAME_STATE = GAME_STATE.SYS_WAIT;
+    private gameStateMachine : StateMachine;
+    private _state: GAME_STATE = GAME_STATE.SYS_WAIT;
     constructor(stateMachine: StateMachine){
         this.gameStateMachine = stateMachine;
     }

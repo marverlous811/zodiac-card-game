@@ -38,12 +38,14 @@ export function simpleGame(){
 
             game.field.setState(FIELD_STATE.NO_TRIGGER);
 
-            let gameState = game.gameListener.state;
+            let gameState = game.state;
             while(gameState !== GAME_STATE.SYS_ENDGAME){
                 // console.log("now player: ", game.nowPlayer.name);
-                game.nowPlayer.draw();
+                if(game.state === GAME_STATE.STAND_BY)
+                    game.nowPlayer.draw();
 
-                gameState = game.gameListener.state;
+                gameState = game.state;
+                // console.log(gameState);
             }
 
             const winner = game.winner;
