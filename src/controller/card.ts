@@ -105,6 +105,19 @@ export class PiecesCard{
 
         return list;
     }
+
+    getCardToTop(card: Card){
+        let index = this.findCard(card);
+        if(index === -1){
+            return false;
+        }
+
+        let temp : Card = this.listCard[index];
+        this.listCard[index] = this.listCard[0];
+        this.listCard[0] = temp;
+
+        return true;
+    }
 }
 
 interface ICardFactory{

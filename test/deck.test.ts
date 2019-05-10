@@ -122,5 +122,29 @@ export function testDeckOfCard(){
             chai.expect(list.length).to.equal(13);
             chai.expect(list[random].name).to.equal("heart");
         })
+
+        mocha.it("swap a card to top", function(){
+            const deck = new PiecesCard();
+            generateDeckOfCard(deck);
+
+            const card = new Card("heart", 1);
+            const index = deck.findCard(card);
+
+            const state = deck.getCardToTop(card);
+
+            chai.expect(state).to.equal(true);
+            chai.expect(deck.list[0].equalTo(card)).to.equal(true);
+            chai.expect(deck.list[index].equalTo(new Card("shape",1))).to.equal(true);
+        })
+
+        mocha.it("swap a card to top with the false card", function(){
+            const deck = new PiecesCard();
+            generateDeckOfCard(deck);
+
+            const card = new Card("scopion", 1);
+            const state = deck.getCardToTop(card);
+
+            chai.expect(state).to.equal(false);
+        })
     })
 }
