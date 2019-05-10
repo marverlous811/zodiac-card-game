@@ -51,9 +51,11 @@ export function simpleGame(){
             const winner = game.winner;
             // console.log(winner)
             chai.expect(winner).is.not.equal(undefined);
+            chai.expect(game.deckLength).is.equal(0);
             if(winner){
                 chai.expect(winner.score).is.not.equal(0);
                 chai.expect(winner.handLength).is.not.equal(0);
+                chai.expect(game.dustLength).is.equal(75 - winner.handLength);
                 const players = game.listPlayer
                 for(let i = 0; i < players.length; i++){
                     const player = players[i];

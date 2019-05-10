@@ -65,6 +65,7 @@ export class Field {
     filter(card: Card, next?: (card: Card) => GAME_STATE){
         if(this.hasCardSameName(card)){
             // console.log("have the same card name");
+            this.listCard.push(card);
             return GAME_STATE.SYS_ENDTURN;
         }
 
