@@ -3,6 +3,7 @@ import { GAME_STATE } from "./gameAction";
 import { Card } from "./card";
 import { AriesEffect } from "../card/aries";
 import { CardEffect } from "../card/effect";
+import { Taurus } from "../card/taurus";
 
 
 export class EffectMethod{
@@ -21,6 +22,7 @@ export class EffectMethod{
 
     init(action : ICardAction){
         this.effectMap.set("aries", new AriesEffect(action));
+        this.effectMap.set("taurus", new Taurus(action));
     }
 
     trigger(card: Card){

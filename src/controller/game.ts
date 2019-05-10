@@ -13,14 +13,16 @@ export interface ICardAction{
     deck: PiecesCard;
     dust: PiecesCard;
     field: Field;
+    userTimeout : number;
     changeFieldState: (state: FIELD_STATE) => void;
     seeTopCards: () => void;
     addCardToTmp: (piecesCard: PiecesCard) => void;
-    giveACard: (player: Player) => void;
+    giveACard: () => void;
     dropCardFromTmp: (piecesCard: PiecesCard) => void;
     changeGameState: (state: GAME_STATE) => void;
     sendCardToDust: (listCard: Array<Card>) => void;
     addCardForNowPlayer: (listCard: Array<Card>) => void;
+    flushTmp: () => void;
 }
 
 export class Game extends events.EventEmitter implements ICardAction{
@@ -31,6 +33,7 @@ export class Game extends events.EventEmitter implements ICardAction{
     private triggerTimeout: number = 10;
     private timeoutId : number = -1;
 
+    userTimeout : number = 20;
     cardTmp : Array<Card> = [];
     deck : PiecesCard = new PiecesCard();
     dust : PiecesCard = new PiecesCard();
@@ -62,6 +65,10 @@ export class Game extends events.EventEmitter implements ICardAction{
 
     get state(){
         return this.gameListener.state
+    }
+
+    timeout(second: number){
+        this.triggerTimeout = second;
     }
 
     init(players: Array<Player>){
@@ -255,7 +262,7 @@ export class Game extends events.EventEmitter implements ICardAction{
 
     }
 
-    giveACard = (player: Player) => {
+    giveACard = () => {
 
     }
 
@@ -276,5 +283,9 @@ export class Game extends events.EventEmitter implements ICardAction{
             const card = listCard[i];
             this.dust.addCard(card);
         }
+    }
+
+    flushTmp(){
+        this.cardTmp = [];
     }
 }

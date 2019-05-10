@@ -10,6 +10,7 @@ export enum GAME_STATE{
     SYS_WAIT,           // 8: wait for game
     SYS_WAIT_CHAIN,     // 9: wait for chain link
     SYS_ACTIVE,         // 10: start to active effect
+    WAIT_PLAYER_CHOICE  // 11: wait for player choice
 }
 
 export class GameAction {

@@ -95,4 +95,18 @@ export default class Player{
 
         this.listener.changeState(GAME_STATE.PLAYER_ENDTURN);
     }
+
+    selectACard(listCard: Array<Card>, pos: number){
+        if(pos >= listCard.length)
+            return false;
+
+        const cards = listCard.splice(pos, 1);
+        if(cards.length === 0) {
+            return false;
+        }
+        
+        this.hand.addCard(cards[0]);
+        if(this.listener) this.listener.changeState(GAME_STATE.STAND_BY);
+        return true;
+    }
 }
