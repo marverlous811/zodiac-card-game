@@ -133,8 +133,8 @@ export function testDeckOfCard(){
             const state = deck.getCardToTop(card);
 
             chai.expect(state).to.equal(true);
-            chai.expect(deck.list[0].equalTo(card)).to.equal(true);
-            chai.expect(deck.list[index].equalTo(new Card("shape",1))).to.equal(true);
+            chai.expect(deck.list[deck.length-1].equalTo(card)).to.equal(true);
+            chai.expect(deck.list[index].equalTo(new Card("diamond",13))).to.equal(true);
         })
 
         mocha.it("swap a card to top with the false card", function(){

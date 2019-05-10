@@ -113,8 +113,8 @@ export class PiecesCard{
         }
 
         let temp : Card = this.listCard[index];
-        this.listCard[index] = this.listCard[0];
-        this.listCard[0] = temp;
+        this.listCard[index] = this.listCard[this.length-1];
+        this.listCard[this.length-1] = temp;
 
         return true;
     }
