@@ -8,7 +8,7 @@ export enum CARD_TYPE {
 }
 
 export class Card{
-    protected type : CARD_TYPE | undefined;
+    protected _type : CARD_TYPE | undefined;
     protected _name : string = '';
     protected _value: number = 0;
 
@@ -19,12 +19,12 @@ export class Card{
 
     equalTo(card: Card){
         return this._name  === card._name 
-            && this.type  === card.type
+            && this._type  === card._type
             && this._value === card._value
     }
 
     isTheSameName(card: Card){
-        return this.type === card.type
+        return this._type === card._type
             && this._name === card._name
     }
 
@@ -35,12 +35,16 @@ export class Card{
     get value(){
         return this._value;
     }
+
+    get type(){
+        return this._type;
+    }
 }
 
 export class ZodiacCard extends Card{
     constructor(name: string, value: number){
         super(name, value);
-        this.type = CARD_TYPE.ZODIAC;
+        this._type = CARD_TYPE.ZODIAC;
     }
 }
 
@@ -48,7 +52,7 @@ export class PlanetCard extends Card{
     private protectionZodiac : Array<string> = [];
     constructor(name: string, value: number, listZodiac: Array<string>){
         super(name, value);
-        this.type = CARD_TYPE.PLANET;
+        this._type = CARD_TYPE.PLANET;
         this.protectionZodiac = listZodiac;
     }
 }

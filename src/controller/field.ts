@@ -1,4 +1,4 @@
-import { Card } from "./card";
+import { Card, CARD_TYPE } from "./card";
 import { GAME_STATE } from "./gameAction";
 
 
@@ -82,7 +82,9 @@ export class Field {
 
     trigger(card: Card){
         //TODO: add card effect here
-
+        if(card.type === CARD_TYPE.PLANET){
+            return GAME_STATE.STAND_BY;
+        }
 
         // console.log("trigger a card effect");
         return GAME_STATE.SYS_TRIGGER;
