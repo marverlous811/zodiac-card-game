@@ -5,6 +5,7 @@ import { AriesEffect } from "../card/aries";
 import { CardEffect } from "../card/effect";
 import { Taurus } from "../card/taurus";
 import { GeminiEffect } from "../card/gemini";
+import { CancerEffect } from "../card/cancer";
 
 
 export class EffectMethod{
@@ -25,6 +26,7 @@ export class EffectMethod{
         this.effectMap.set("aries", new AriesEffect(action));
         this.effectMap.set("taurus", new Taurus(action));
         this.effectMap.set("gemini", new GeminiEffect(action));
+        this.effectMap.set("cancer", new CancerEffect(action));
     }
 
     trigger(card: Card){

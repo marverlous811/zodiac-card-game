@@ -175,4 +175,32 @@ export default function effectTest(){
             })
         })
     })
+
+    mocha.describe("test cancer effect", function(){
+        mocha.it("with value 5", function(done){
+            const game = createGame();
+            const player = game.nowPlayer;
+            game.deck.getCardToTop(new ZodiacCard('cancer',5));
+            player.draw();
+
+            game.on('active_done', (state) => {
+                chai.expect(state).to.equal(GAME_STATE.WAIT_PLAYER_CHOICE);
+                chai.expect(game.cardTmp.length).to.equal(2);
+                done();
+            })
+        })
+
+        mocha.it("with value 10", function(done){
+            const game = createGame();
+            const player = game.nowPlayer;
+            game.deck.getCardToTop(new ZodiacCard('cancer',10));
+            player.draw();
+
+            game.on('active_done', (state) => {
+                chai.expect(state).to.equal(GAME_STATE.WAIT_PLAYER_CHOICE);
+                chai.expect(game.cardTmp.length).to.equal(1);
+                done();
+            })
+        })
+    })
 }

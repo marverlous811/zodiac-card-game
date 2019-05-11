@@ -15,7 +15,7 @@ export interface ICardAction{
     field: Field;
     userTimeout : number;
     changeFieldState: (state: FIELD_STATE) => void;
-    seeTopCards: () => void;
+    giveBackDeck: (listCard: Array<Card>) => void;
     addCardToTmp: (piecesCard: PiecesCard) => void;
     giveACard: () => void;
     giveForAll: () => boolean;
@@ -265,8 +265,14 @@ export class Game extends events.EventEmitter implements ICardAction{
         this.field.setState(state);
     }
 
-    seeTopCards = () => {
+    giveBackDeck = (listCard: Array<Card>) => {
+        for(let i = listCard.length - 1; i >= 0 ; i--){
+            const card = listCard[i];
+            this.dust.addCard(card);
+        }
 
+        this.flushTmp();
+        this.changeGameState(GAME_STATE.STAND_BY);``
     }
 
     addCardToTmp = () => {
