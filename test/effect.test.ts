@@ -9,8 +9,11 @@ import { GAME_STATE } from "../src/controller/gameAction";
 function createGame(){
     const game = new Game();
     const player = new Player("marverlous");
+    const player2 = new Player("raikusen");
+    const player3 = new Player("shortkiller");
+    const player4 = new Player("crystal_sun");
 
-    game.init([player]);
+    game.init([player, player2, player3, player4]);
     game.startGame();
     game.timeout(1);
 
@@ -115,6 +118,59 @@ export default function effectTest(){
                 chai.expect(game.dustLength).to.equal(19);
                 chai.expect(game.cardTmp.length).to.equal(0);
 
+                done();
+            })
+        })
+    })
+
+    mocha.describe("test gemini effect", function(){
+        mocha.it("normal effect", function(done){
+            const game = createGame();
+            const player = game.nowPlayer;
+            game.deck.getCardToTop(new ZodiacCard('gemini',4));
+            player.draw();
+
+            game.on("active_done", (state) => {
+                const listPlayer = game.listPlayer;
+                chai.expect(state).to.equal(GAME_STATE.STAND_BY);
+                for(let i = 0; i < listPlayer.length; i++){
+                    const _player = listPlayer[i];
+                    chai.expect(_player.handLength).to.equal(1);
+                }
+
+                done();
+            })
+        })
+
+        mocha.it("in the last draw", function(done){
+            const game = createGame();
+            const player = game.nowPlayer;
+
+            game.deck.getCardToPos(new ZodiacCard('gemini',4),3);
+            const deck = game.deck;
+            
+            while(deck.length > 4){
+                game.deck.popCard();
+            }
+
+            player.draw();
+            game.on('active_done', (state) => {
+                const listPlayer = game.listPlayer;
+                chai.expect(state).to.equal(GAME_STATE.SYS_ENDGAME);
+                for(let i = 0; i < listPlayer.length; i++){
+                    const _player = listPlayer[i];
+                    if(i === listPlayer.length - 1){
+                        chai.expect(_player.handLength).to.equal(0);
+                    }
+                    else{
+                        if(_player.name === player.name){
+                            chai.expect(_player.handLength).to.equal(2);
+                        }
+                        else{
+                            chai.expect(_player.handLength).to.equal(1);
+                        }
+                    }
+                }
                 done();
             })
         })

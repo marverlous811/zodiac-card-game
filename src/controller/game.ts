@@ -18,6 +18,7 @@ export interface ICardAction{
     seeTopCards: () => void;
     addCardToTmp: (piecesCard: PiecesCard) => void;
     giveACard: () => void;
+    giveForAll: () => boolean;
     dropCardFromTmp: (piecesCard: PiecesCard) => void;
     changeGameState: (state: GAME_STATE) => void;
     sendCardToDust: (listCard: Array<Card>) => void;
@@ -264,6 +265,34 @@ export class Game extends events.EventEmitter implements ICardAction{
 
     giveACard = () => {
 
+    }
+
+    giveForAll = () => {
+        let state = true;
+        let cardOrder = [];
+        const nowIndex = this.nowTurnPlayer;
+        
+        for(let i = 0; i < this.players.length; i++){
+            if(nowIndex + i >= this.players.length){
+                cardOrder.push(0);
+            }
+            cardOrder.push(nowIndex+i);
+        }
+
+        for(let i = 0; i < this.players.length; i++){
+            if(this.deck.length === 0){
+                state = false;
+                break;
+            }
+
+            const card = this.deck.popCard();
+            if(!card){
+                continue
+            }
+            this.players[cardOrder[i]].addCard(card);
+        }
+
+        return state;
     }
 
     addCardForNowPlayer = (listCard: Array<Card>) => {
