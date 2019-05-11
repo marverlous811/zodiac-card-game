@@ -22,6 +22,10 @@ export class EffectMethod{
         return this.instance;
     }
 
+    get length() {
+        return this.triggerQueue.length;
+    }
+
     init(action : ICardAction){
         this.effectMap.set("aries", new AriesEffect(action));
         this.effectMap.set("taurus", new Taurus(action));
@@ -49,13 +53,15 @@ export class EffectMethod{
     activeEffect(){
         // console.log("start active effect...");
         let game_state = GAME_STATE.STAND_BY
-        while(this.triggerQueue.length > 0){
+        if(this.triggerQueue.length > 0){
             const card = this.triggerQueue.pop();
             // console.log("trigger card");
-            if(card)
+            if(card){
                 game_state = this.trigger(card);
+                return {game_state, card};
+            }
         }
 
-        return game_state;
+        return {game_state, card: null};
     }
 }

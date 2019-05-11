@@ -252,9 +252,17 @@ export class Game extends events.EventEmitter implements ICardAction{
     }
 
     activeEffect = () => {
-        const state = this.effectMethod.activeEffect();
-        this.changeGameState(state);
-        this.emit("active_done", state);
+        const {game_state, card} = this.effectMethod.activeEffect();
+        if( game_state !== GAME_STATE.SYS_ENDTURN
+            && game_state !== GAME_STATE.SYS_ENDGAME 
+            && this.effectMethod.length > 0){
+            this.emit("active_chain", game_state, card);
+            return this.effectMethod.activeEffect();
+        }
+        else{
+            this.changeGameState(game_state);
+            this.emit("active_done", game_state, card);
+        }
     }
 
 
