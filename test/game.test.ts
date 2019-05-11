@@ -24,11 +24,16 @@ export default function gameTest(){
             chai.expect(game.numberPlayer).to.equal(4);
         });
 
-        mocha.it("start game", function(){
+        mocha.it("start game with 2 card at start ", function(){
+            game.setStartCard(2);
             game.startGame();
 
             chai.expect(game.nowPlayer.actived).to.equal(true);
             chai.expect(game.state).to.equal(GAME_STATE.STAND_BY);
+            for(let i = 0; i < game.numberPlayer; i++){
+                const player = game.listPlayer[i];
+                chai.expect(player.handLength).to.equal(2);
+            }
         })
 
         mocha.it("next turn ", function(){

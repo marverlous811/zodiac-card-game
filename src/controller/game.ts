@@ -33,6 +33,7 @@ export class Game extends events.EventEmitter implements ICardAction{
     private numberShuffle: number = 10;
     private triggerTimeout: number = 10;
     private timeoutId : number = -1;
+    private startCard: number = 0;
 
     userTimeout : number = 20;
     cardTmp : Array<Card> = [];
@@ -70,6 +71,10 @@ export class Game extends events.EventEmitter implements ICardAction{
 
     timeout(second: number){
         this.triggerTimeout = second;
+    }
+
+    setStartCard(number: number){
+        this.startCard = number;
     }
 
     init(players: Array<Player>){
@@ -147,6 +152,11 @@ export class Game extends events.EventEmitter implements ICardAction{
             this.listPlayer = shuffleArray(this.listPlayer);
             this.shuffleCard(this.deck);
             this.shuffleCard(this.dust);
+        }
+        if(this.startCard !== 0){
+            for(let i = 0; i < this.startCard; i++){
+                this.giveForAll();
+            }
         }
         this.nowPlayer.setActive(true);
         this.changeGameState(GAME_STATE.STAND_BY);
