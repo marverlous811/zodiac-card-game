@@ -2,7 +2,8 @@ import { Game } from "../controller/game";
 
 export default class GameMater{
     private game: Game = new Game();
-
+    private id: string = '';
+    
     constructor(){}
 
     initEventListener(){

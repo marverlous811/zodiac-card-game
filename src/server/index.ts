@@ -41,7 +41,7 @@ export const boot = async () => {
     route(server, store);
 
     //init socket io
-    const socketIO = new Socket(server);
+    const socketIO = new Socket(server, store);
 
     //init server listener
     let [err, data] = await to(server.listen(port, '0.0.0.0'));
