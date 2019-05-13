@@ -14,6 +14,10 @@
 
     `npm install`
 
+- Config
+
+    `cp config.temp config.ts`
+
 - start
     
     `npm run start-server`

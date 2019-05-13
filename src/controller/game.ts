@@ -32,7 +32,7 @@ export class Game extends events.EventEmitter implements ICardAction{
     private gameListener: GameListener = new GameListener(this.gameStateMachine);
     private numberShuffle: number = 10;
     private triggerTimeout: number = 10;
-    private timeoutId : number = -1;
+    private timeoutId : any = -1;
     private startCard: number = 0;
 
     userTimeout : number = 20;
