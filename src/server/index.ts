@@ -5,6 +5,7 @@ import '../../config';
 import { StorageBase } from '../base/storage-base';
 import { MemStore } from '../store/memStore';
 import { route } from './route';
+import { Socket } from './socket';
 
 const server : fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({});
 const port : number = parseInt(process.env.PORT || '8080');
@@ -38,6 +39,9 @@ export const boot = async () => {
 
     //init route
     route(server, store);
+
+    //init socket io
+    const socketIO = new Socket(server);
 
     //init server listener
     let [err, data] = await to(server.listen(port, '0.0.0.0'));
