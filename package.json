@@ -10,6 +10,7 @@
     "server-build": "tsc -w",
     "build": "webpack --config webpack-prod.config.js",
     "clean": "rm -rf ./dist/*",
+    "api-test": "SVR_HOST=\"http://localhost:8080\" mocha dist/test/server/server.test.js",
     "start-server": "npm run clean && tsc && node dist/app.js",
     "start-client": "npm run clean && npm run start",
     "start-test": "npm run clean && tsc && npm run test"

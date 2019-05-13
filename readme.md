@@ -22,6 +22,10 @@
     
     `npm run start-server`
 
-- test
+- test core
 
     `npm run start-test`
+
+- test server
+
+    `tsc && npm run api-test`
