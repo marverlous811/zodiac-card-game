@@ -1,10 +1,21 @@
 import { Game } from "../controller/game";
+import { Room, SocketClient } from "./socket";
+import Player from "../controller/player";
+
+export interface IPlayerData{
+    socket: any,
+    player: Player
+}
 
 export default class GameMater{
     private game: Game = new Game();
     private id: string = '';
-    
-    constructor(){}
+    private room : Room;
+    private listUser : Map<String, IPlayerData> = new Map();
+
+    constructor(room : Room){
+        this.room = room;
+    }
 
     initEventListener(){
         this.game.on('start_game', this.onGameStart);
@@ -17,7 +28,21 @@ export default class GameMater{
         this.game.on('active_done', this.onActiveDone);
     }
 
-    onGameStart = () => {}
+    onUserJoin = (user : SocketClient) => {
+        const name = user.name;
+
+        const player = new Player(name);
+        const playerData : IPlayerData = {socket: user.socket, player};
+        this.listUser.set(name, playerData);
+    }
+
+    onUserDisconnect = (name: string) => {
+        this.listUser.delete(name);
+    }
+
+    onGameStart = () => {
+        this.room.emit("start_game", "");
+    }
     onEndDrawPhase = () => {}
     onNextTurn = () => {}
     onTriggerCard = () => {}

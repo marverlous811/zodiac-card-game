@@ -1,6 +1,7 @@
 import * as socketio from 'socket.io';
 import { FastifyInstance } from 'fastify';
 import { StorageBase } from '../base/storage-base';
+import GameMater from './gameMaster';
 
 interface IClientUser{
     socket: any;
@@ -51,8 +52,9 @@ export class Socket {
 export class Room{
     private listUser : Array<SocketClient> = [];
     maxUser : number = 4;
+    private gameMaster : GameMater;
     constructor(private socket: any, private _name: string){
-        
+        this.gameMaster = new GameMater(this);
     }
 
     setMaxUser(number: number){
@@ -69,6 +71,9 @@ export class Room{
         const client = new SocketClient(socket, name, this);
 
         this.listUser.push(client);
+        if(this.gameMaster){
+            this.gameMaster.onUserJoin(client);
+        }
         return true;
     }
 
@@ -85,6 +90,10 @@ export class Room{
         let index = this.findClient(name);
         if(index === -1){
             return false;
+        }
+
+        if(this.gameMaster){
+            this.gameMaster.onUserDisconnect(name);
         }
 
         this.listUser.splice(index, 1);
@@ -109,7 +118,7 @@ export class Room{
 }
 
 export class SocketClient{
-    constructor(private socket: any, private _name: string, private listener: Room){
+    constructor(private _socket: any, private _name: string, private listener: Room){
         this.socket.join(this.listener.name, () => {
             this.listener.sendMessage('hello');
         });
@@ -121,5 +130,9 @@ export class SocketClient{
 
     get name(){
         return this._name;
+    }
+
+    get socket(){
+        return this._socket;
     }
 }
