@@ -1,6 +1,7 @@
 import { Game } from "../controller/game";
 import { Room, SocketClient } from "./socket";
 import Player from "../controller/player";
+import gameTest from "../../test/game.test";
 
 export interface IPlayerData{
     socket: any,
@@ -15,6 +16,7 @@ export default class GameMater{
 
     constructor(room : Room){
         this.room = room;
+        this.initEventListener();
     }
 
     initEventListener(){
@@ -41,8 +43,11 @@ export default class GameMater{
     }
 
     onGameStart = () => {
-        this.room.emit("start_game", "");
+        console.log("game start...");
+        const data = {nowTurn: this.game.nowPlayer.name}
+        this.room.emit("START_GAME", JSON.stringify(data));
     }
+
     onEndDrawPhase = () => {}
     onNextTurn = () => {}
     onTriggerCard = () => {}
@@ -50,4 +55,17 @@ export default class GameMater{
     onEndGame = () => {}
     onActiveChain = () => {}
     onActiveDone = () => {}
+
+    allReady = async () => {
+        const listPlayer : Array<Player> = [];
+        await this.listUser.forEach(async (value, key) => {
+            await listPlayer.push(value.player);
+        })
+
+        console.log(listPlayer);
+        this.game.init(listPlayer);
+        this.game.startGame();
+    }
+
+
 }

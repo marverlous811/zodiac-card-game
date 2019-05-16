@@ -53,6 +53,7 @@ export class Room{
     private listUser : Array<SocketClient> = [];
     maxUser : number = 4;
     private gameMaster : GameMater;
+    private nowNumberReady : number = 0;
     constructor(private socket: any, private _name: string){
         this.gameMaster = new GameMater(this);
     }
@@ -97,7 +98,18 @@ export class Room{
         }
 
         this.listUser.splice(index, 1);
+        this.nowNumberReady--;
         console.log(this.listUser.length);
+    }
+
+    onPlayerReady(){
+        this.nowNumberReady++;
+        if(this.nowNumberReady === this.maxUser){
+            console.log("all player is ready");
+            this.gameMaster.allReady();
+        }
+        const userData = {max: this.maxUser, ready: this.nowNumberReady};
+        this.emit("PLAYER_READY", JSON.stringify(userData));
     }
 
     findClient(name: string){
@@ -118,6 +130,7 @@ export class Room{
 }
 
 export class SocketClient{
+    isReady : boolean = false;
     constructor(private _socket: any, private _name: string, private listener: Room){
         this.socket.join(this.listener.name, () => {
             this.listener.sendMessage('hello');
@@ -126,6 +139,16 @@ export class SocketClient{
             this.listener.onClientDisconnect(this.name)
         });
 
+        this.socket.on('READY', (name: string) => {
+            console.log(`${name} is ready`);
+            this.isReady = true;
+            this.listener.onPlayerReady();
+        })
+
+    }
+
+    get ready(){
+        return this.isReady
     }
 
     get name(){
