@@ -124,6 +124,14 @@ export class Room{
         return index;
     }
 
+    playerDraw(){
+        this.gameMaster.draw();
+    }
+
+    playerEndTurn(){
+        this.gameMaster.endTurn();
+    }
+
     get name(){
         return this._name;
     }
@@ -145,6 +153,13 @@ export class SocketClient{
             this.listener.onPlayerReady();
         })
 
+        this.socket.on("DRAW", () => {
+            this.listener.playerDraw();
+        })
+
+        this.socket.on("END_TURN", () => {
+            this.listener.playerEndTurn();
+        })
     }
 
     get ready(){

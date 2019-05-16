@@ -180,7 +180,7 @@ export class Game extends events.EventEmitter implements ICardAction{
             }
         }
             
-        this.emit("end_draw_phase");
+        this.emit("end_draw_phase", card);
     }
 
     endTurn = (dropFlag: boolean) => {
@@ -192,10 +192,13 @@ export class Game extends events.EventEmitter implements ICardAction{
         else{
             this.nowPlayer.addCards(listCardFromField);
         }
+
+        const nowPlayer = this.nowPlayer;
         
         if(this.gameListener.state !== GAME_STATE.SYS_ENDGAME){
             this.nextTurn();
-            this.emit("next_turn");
+            const nextPlayer = this.nowPlayer;
+            this.emit("next_turn", nowPlayer, nextPlayer);
         }
     }
 

@@ -2,6 +2,8 @@ import { Game } from "../controller/game";
 import { Room, SocketClient } from "./socket";
 import Player from "../controller/player";
 import gameTest from "../../test/game.test";
+import { FIELD_STATE } from "../controller/field";
+import { Card } from "../controller/card";
 
 export interface IPlayerData{
     socket: any,
@@ -48,8 +50,19 @@ export default class GameMater{
         this.room.emit("START_GAME", JSON.stringify(data));
     }
 
-    onEndDrawPhase = () => {}
-    onNextTurn = () => {}
+    onEndDrawPhase = (card: Card) => {
+        const data = {type: card.type, name: card.name, value: card.value};
+        this.room.emit("END_DRAW_PHASE", JSON.stringify(data));
+    }
+
+    onNextTurn = (nowPlayer: Player, nextPlayer: Player) => {
+        const now = {name: nowPlayer.name, score: nowPlayer.score};
+        const next = {name: nextPlayer.name, score: nextPlayer.score};
+
+        const data = {now, next};
+        this.room.emit("END_TURN", JSON.stringify(data));
+    }
+    
     onTriggerCard = () => {}
     onActivePhase = () => {}
     onEndGame = () => {}
@@ -65,7 +78,15 @@ export default class GameMater{
         console.log(listPlayer);
         this.game.init(listPlayer);
         this.game.startGame();
+        //SET GAME MODE DRAW ONLY
+        this.game.field.setState(FIELD_STATE.ADD_ONLY);
     }
 
+    draw = () => {
+        this.game.nowPlayer.draw();
+    }
 
+    endTurn = () => {
+        this.game.nowPlayer.endTurn();
+    }
 }
