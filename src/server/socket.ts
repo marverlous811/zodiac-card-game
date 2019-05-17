@@ -51,7 +51,7 @@ export class Socket {
 
 export class Room{
     private listUser : Array<SocketClient> = [];
-    maxUser : number = 4;
+    maxUser : number = 2;
     private gameMaster : GameMater;
     private nowNumberReady : number = 0;
     constructor(private socket: any, private _name: string){
@@ -102,13 +102,13 @@ export class Room{
         console.log(this.listUser.length);
     }
 
-    onPlayerReady(){
+    onPlayerReady(name: string){
         this.nowNumberReady++;
         if(this.nowNumberReady === this.maxUser){
             console.log("all player is ready");
             this.gameMaster.allReady();
         }
-        const userData = {max: this.maxUser, ready: this.nowNumberReady};
+        const userData = {max: this.maxUser, ready: this.nowNumberReady, name: name};
         this.emit("PLAYER_READY", JSON.stringify(userData));
     }
 
@@ -150,7 +150,7 @@ export class SocketClient{
         this.socket.on('READY', (name: string) => {
             console.log(`${name} is ready`);
             this.isReady = true;
-            this.listener.onPlayerReady();
+            this.listener.onPlayerReady(name);
         })
 
         this.socket.on("DRAW", () => {

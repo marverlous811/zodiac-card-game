@@ -60,12 +60,19 @@ export default class GameMater{
         const next = {name: nextPlayer.name, score: nextPlayer.score};
 
         const data = {now, next};
+
         this.room.emit("END_TURN", JSON.stringify(data));
     }
-    
+
     onTriggerCard = () => {}
     onActivePhase = () => {}
-    onEndGame = () => {}
+    
+    onEndGame = (winner : Player, nowPlayer: Player) => {
+        const player = {name: winner.name};
+        const now = {name: nowPlayer.name, score: nowPlayer.score}
+        this.room.emit("END_GAME", JSON.stringify({winner: player, now}));
+    }
+    
     onActiveChain = () => {}
     onActiveDone = () => {}
 
@@ -79,7 +86,7 @@ export default class GameMater{
         this.game.init(listPlayer);
         this.game.startGame();
         //SET GAME MODE DRAW ONLY
-        this.game.field.setState(FIELD_STATE.ADD_ONLY);
+        this.game.field.setState(FIELD_STATE.NO_TRIGGER);
     }
 
     draw = () => {

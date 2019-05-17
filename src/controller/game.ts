@@ -165,12 +165,15 @@ export class Game extends events.EventEmitter implements ICardAction{
 
     getFromDeckToField = () => {
         const card = this.deck.popCard();
-        if(this.deck.length === 0){
-            this.changeGameState(GAME_STATE.SYS_ENDGAME);
-        }
         if(!card) return;
 
         const state = this.field.push(card);
+        this.emit("end_draw_phase", card);
+        if(this.deck.length === 0){
+            this.changeGameState(GAME_STATE.SYS_ENDGAME);
+            return;
+        }
+
         if(state){
             if(state === GAME_STATE.SYS_TRIGGER){
                 this.changeGameState(state, card);
@@ -178,9 +181,7 @@ export class Game extends events.EventEmitter implements ICardAction{
             else{
                 this.changeGameState(state);
             }
-        }
-            
-        this.emit("end_draw_phase", card);
+        }     
     }
 
     endTurn = (dropFlag: boolean) => {
@@ -235,7 +236,7 @@ export class Game extends events.EventEmitter implements ICardAction{
     endGame = () => {
         this.endTurn(false);
         this.winner =  this.whoIsWinner();
-        this.emit("end_game");
+        this.emit("end_game", this.winner, this.nowPlayer);
     }
 
     whoIsWinner = () => {
